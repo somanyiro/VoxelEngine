@@ -1,3 +1,9 @@
+using System.Numerics;
+using Jitter2;
+using Jitter2.LinearMath;
+
+namespace VoxelEngine;
+
 public static class Utils
 {
 
@@ -44,5 +50,16 @@ public static class Utils
 		}
 
 		return noiseData;
+	}
+
+	static Matrix4x4 GetRayLibTransformMatrix(RigidBody body)
+	{
+		JMatrix ori = body.Orientation;
+		JVector pos = body.Position;
+
+		return new Matrix4x4(ori.M11, ori.M12, ori.M13, pos.X,
+							 ori.M21, ori.M22, ori.M23, pos.Y,
+							 ori.M31, ori.M32, ori.M33, pos.Z,
+							 0, 0, 0, 1.0f);
 	}
 }

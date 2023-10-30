@@ -1,13 +1,17 @@
 using System;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
+using Jitter2;
 using System.Numerics;
 using System.Collections.Generic;
 using System.Linq;
 
+namespace VoxelEngine;
+
 public class VoxelWorld
 {
-	World world = new World(1, 1, 1);
+	World world = new World(10, 5, 10);
+	Jitter2.World physicsWorld = new ();
 
 	Texture2D atlas;
 
@@ -28,6 +32,8 @@ public class VoxelWorld
 		Random random = new Random();
 
 		atlas = LoadTexture("assets/texture_atlas.png");
+
+		world.CreatePhysicsObjects(physicsWorld);
 
 		while (!WindowShouldClose())
 		{
@@ -57,6 +63,8 @@ public class VoxelWorld
 				UpdateCamera(ref camera, CameraMode.CAMERA_ORBITAL);
 				SetMousePosition(640, 360);
 			}
+
+			physicsWorld.Step(GetFrameTime(), true);
 
 			BeginDrawing();
 			ClearBackground(Color.SKYBLUE);

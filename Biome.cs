@@ -1,3 +1,4 @@
+namespace VoxelEngine;
 
 public class Biome
 {

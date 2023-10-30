@@ -1,5 +1,11 @@
 using Raylib_cs;
 using static Raylib_cs.Raylib;
+using Jitter2;
+using Jitter2.Dynamics;
+using Jitter2.Collision.Shapes;
+using Jitter2.LinearMath;
+
+namespace VoxelEngine;
 
 public class World 
 {
@@ -78,6 +84,23 @@ public class World
 
 		if (chunks[chunkX, chunkY, chunkZ].empty && type != Voxel.Types.Air)
 			chunks[chunkX, chunkY, chunkZ].empty = false;
+	}
+
+	public void CreatePhysicsObjects(Jitter2.World physicsWorld)
+	{
+		for (int x = 0; x < Width; x++) {
+			for (int y = 0; y < Height; y++) {
+				for (int z = 0; z < Depth; z++) {
+					if (GetVoxel(x,y,z).visible)
+					{
+						RigidBody cube = physicsWorld.CreateRigidBody();
+						cube.AddShape(new BoxShape(1));
+						cube.IsStatic = true;
+						cube.Position = new JVector(x - Width/2, y - Height/2, z - Depth/2);
+					}
+				}
+			}
+		}
 	}
 
 	public void Generate(int seed = 1)

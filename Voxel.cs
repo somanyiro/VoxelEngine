@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+namespace VoxelEngine;
+
 public struct Voxel
 {
 	public enum Types

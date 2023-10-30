@@ -1,6 +1,8 @@
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 
+namespace VoxelEngine;
+
 public struct Chunk 
 {
 	public Voxel[,,] voxels = new Voxel[8,8,8];
