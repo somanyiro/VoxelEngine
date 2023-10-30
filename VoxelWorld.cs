@@ -2,6 +2,9 @@ using System;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 using Jitter2;
+using Jitter2.Collision.Shapes;
+using Jitter2.Dynamics;
+using Jitter2.LinearMath;
 using System.Numerics;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +37,17 @@ public class VoxelWorld
 		atlas = LoadTexture("assets/texture_atlas.png");
 
 		world.CreatePhysicsObjects(physicsWorld);
+
+		for (int i = 0; i < 100; i++) 
+		{
+			RigidBody testCube = physicsWorld.CreateRigidBody();
+			testCube.Position = new JVector(0.1f*i, 10*i, 0.1f*i);
+			testCube.AddShape(new BoxShape(1,1,1));
+		}
+
+		Mesh testCubeMesh = GenMeshCube(1, 1, 1);
+		Material testCubeMaterial = LoadMaterialDefault();
+		SetMaterialTexture(ref testCubeMaterial, MaterialMapIndex.MATERIAL_MAP_DIFFUSE, LoadTexture("assets/stone.png"));
 
 		while (!WindowShouldClose())
 		{
@@ -69,11 +83,18 @@ public class VoxelWorld
 			BeginDrawing();
 			ClearBackground(Color.SKYBLUE);
 
-			DrawFPS(10,10);
+			//DrawFPS(10,10);
 
 			BeginMode3D(camera);
 
 			Rlgl.rlBegin(DrawMode.QUADS);//I moved this here from DrawVoxel because it was slowing down rendering
+
+			foreach (var body in physicsWorld.RigidBodies)
+			{
+				if (body.IsStatic) continue;
+
+				DrawMesh(testCubeMesh, testCubeMaterial, Utils.GetRayLibTransformMatrix(body));
+			}
 
 			//draw non transparent voxels
 			for (int x = 0; x < world.chunks.GetLength(0); x++) {
