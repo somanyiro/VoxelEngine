@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "8waSU6RcoaSeJF7jR9vfkbZNRq+EcHC9t5epS/8yN+BV5t14+QlgIfqIxakavzU1hbSCLeMu7QrlubWczSMUSg==",
+  "dgSpecHash": "ChyNLczE9kSGPl/NAU94BWdYAFoi/KeiBRSYj4yF1aq8KSkEknpdSkhlSfqCIj2gHU9uC4tGBgJETF9+LRzC0Q==",
   "success": true,
   "projectFilePath": "/home/soma/Documents/misc/VoxelEngine/VoxelEngine.csproj",
   "expectedPackageFiles": [
+    "/home/soma/.nuget/packages/jitter2/2.0.1/jitter2.2.0.1.nupkg.sha512",
     "/home/soma/.nuget/packages/raylib-cs/4.5.0.4/raylib-cs.4.5.0.4.nupkg.sha512",
     "/home/soma/.nuget/packages/system.numerics.vectors/4.5.0/system.numerics.vectors.4.5.0.nupkg.sha512"
   ],

@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "Jitter2/2.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/Jitter2.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Jitter2.dll": {}
+        }
+      },
       "Raylib-cs/4.5.0.4": {
         "type": "package",
         "dependencies": {
@@ -48,6 +57,23 @@
     }
   },
   "libraries": {
+    "Jitter2/2.0.1": {
+      "sha512": "EySYsxh0wjz4PTh/2hJBNW/gC+THBbnMNuJ/VF+NKO0X1KsVkxiHTwgA7dHfF57LLI3A6t49tdKAJ5riOaskNg==",
+      "type": "package",
+      "path": "jitter2/2.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "jitter2.2.0.1.nupkg.sha512",
+        "jitter2.nuspec",
+        "lib/net6.0/Jitter2.dll",
+        "lib/net6.0/Jitter2.xml",
+        "lib/net7.0/Jitter2.dll",
+        "lib/net7.0/Jitter2.xml",
+        "readme.md"
+      ]
+    },
     "Raylib-cs/4.5.0.4": {
       "sha512": "soBZJzafgOMdlR3edjHLhN9pjIzosEQ0yZVRDUrOalDvtdc76Br2HaLiszEjCdJDIav7SATbURCkxvWB7Qv4qg==",
       "type": "package",
@@ -120,6 +146,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "Jitter2 >= 2.0.1",
       "Raylib-cs >= 4.5.0.4"
     ]
   },
@@ -165,6 +192,10 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "Jitter2": {
+            "target": "Package",
+            "version": "[2.0.1, )"
+          },
           "Raylib-cs": {
             "target": "Package",
             "version": "[4.5.0.4, )"

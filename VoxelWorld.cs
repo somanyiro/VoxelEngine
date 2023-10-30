@@ -7,7 +7,7 @@ using System.Linq;
 
 public class VoxelWorld
 {
-	World world = new World(10, 5, 10);
+	World world = new World(1, 1, 1);
 
 	Texture2D atlas;
 
@@ -16,11 +16,11 @@ public class VoxelWorld
 		InitWindow(1280, 720, "VoxelEngine");
 
 		Camera3D camera;
-		camera.position = new Vector3(50.0f, 50.0f, 0.0f);
+		camera.position = new Vector3(20.0f, 20.0f, 0.0f);
 		camera.target = new Vector3(0.0f, 5.0f, 0.0f);
 		camera.up = new Vector3(0.0f, 1.0f, 0.0f);
 		camera.fovy = 75.0f;
-		camera.projection = CameraProjection.CAMERA_ORTHOGRAPHIC;
+		camera.projection = CameraProjection.CAMERA_PERSPECTIVE;
 
 		bool captureCursor = true;
 		HideCursor();
