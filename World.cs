@@ -91,7 +91,7 @@ public class World
 		for (int x = 0; x < Width; x++) {
 			for (int y = 0; y < Height; y++) {
 				for (int z = 0; z < Depth; z++) {
-					if (GetVoxel(x,y,z).visible)
+					if (GetVoxel(x,y,z).visible && Voxel.propertiesOf[GetVoxel(x,y,z).type].collisionType == VoxelData.CollisionTypes.Cube)
 					{
 						RigidBody cube = physicsWorld.CreateRigidBody();
 						cube.AddShape(new BoxShape(1));

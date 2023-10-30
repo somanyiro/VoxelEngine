@@ -17,13 +17,13 @@ public struct Voxel
 
 	public static Dictionary<Types, VoxelData> propertiesOf = new Dictionary<Types, VoxelData>()
 	{
-		{Types.Air, new VoxelData(0, 0, 0, 0, 0, true, VoxelData.RenderTypes.Cube)},
-		{Types.Dirt, new VoxelData(0, 0, 8, 8, 255, false, VoxelData.RenderTypes.Cube)},
-		{Types.Stone, new VoxelData(8, 0, 8, 8, 255, false, VoxelData.RenderTypes.Cube)},
-		{Types.Snow, new VoxelData(16, 0, 8, 8, 255, false, VoxelData.RenderTypes.Cube)},
-		{Types.Sand, new VoxelData(24, 0, 8, 8, 255, false, VoxelData.RenderTypes.Cube)},
-		{Types.Water, new VoxelData(32, 0, 8, 8, 100, true, VoxelData.RenderTypes.Cube)},
-		{Types.Grass, new VoxelData(0, 8, 8, 8, 255, true, VoxelData.RenderTypes.XPlane)}
+		{Types.Air, new VoxelData(0, 0, 0, 0, 0, true, VoxelData.RenderTypes.Cube, VoxelData.CollisionTypes.None)},
+		{Types.Dirt, new VoxelData(0, 0, 8, 8, 255, false, VoxelData.RenderTypes.Cube, VoxelData.CollisionTypes.Cube)},
+		{Types.Stone, new VoxelData(8, 0, 8, 8, 255, false, VoxelData.RenderTypes.Cube, VoxelData.CollisionTypes.Cube)},
+		{Types.Snow, new VoxelData(16, 0, 8, 8, 255, false, VoxelData.RenderTypes.Cube, VoxelData.CollisionTypes.Cube)},
+		{Types.Sand, new VoxelData(24, 0, 8, 8, 255, false, VoxelData.RenderTypes.Cube, VoxelData.CollisionTypes.Cube)},
+		{Types.Water, new VoxelData(32, 0, 8, 8, 100, true, VoxelData.RenderTypes.Cube, VoxelData.CollisionTypes.None)},
+		{Types.Grass, new VoxelData(0, 8, 8, 8, 255, true, VoxelData.RenderTypes.XPlane, VoxelData.CollisionTypes.None)}
 	};
 
 	public Types type = Types.Air;
@@ -83,6 +83,12 @@ public struct VoxelData
 		XPlane
 	}
 
+	public enum CollisionTypes
+	{
+		None,
+		Cube
+	}
+
 	public int atlasX;
 	public int atlasY;
 	public int texWidth;
@@ -90,8 +96,9 @@ public struct VoxelData
 	public int alpha;
 	public bool transparent;
 	public RenderTypes renderType;
+	public CollisionTypes collisionType;
 
-	public VoxelData(int atlasX, int atlasY, int texWidth, int texHeight, int alpha, bool transparent, RenderTypes renderType)
+	public VoxelData(int atlasX, int atlasY, int texWidth, int texHeight, int alpha, bool transparent, RenderTypes renderType, CollisionTypes collisionType)
 	{
 		this.atlasX = atlasX;
 		this.atlasY = atlasY;
@@ -100,5 +107,6 @@ public struct VoxelData
 		this.alpha = alpha;
 		this.transparent = transparent;
 		this.renderType = renderType;
+		this.collisionType = collisionType;
 	}
 }
