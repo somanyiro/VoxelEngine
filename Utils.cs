@@ -91,4 +91,9 @@ public static class Utils
 		return vector + MathF.Sin(angle) * vxp + (1 - MathF.Cos(angle)) * vxvxp;
 	}
 
+	public static JVector ToJVector(Vector3 vector)
+	{
+		return new JVector(vector.X, vector.Y, vector.Z);
+	}
+
 }

@@ -32,11 +32,13 @@ public class Player
 		body.AddShape(new CylinderShape(2, 1));
 		body.Position = new JVector(20, 20, 0);
 		body.EnableSpeculativeContacts = true;
+		body.Friction = 0;
+		//body.Velocity
 	}
 
 	public void Update(float deltaTime)
 	{
-		camera.position = new Vector3(body.Position.X, body.Position.Y, body.Position.Z);
+		camera.position = new Vector3(body.Position.X, body.Position.Y+1, body.Position.Z);
 		body.Orientation = JMatrix.Identity;
 		camera.target = camera.position + lookDirection;
 
@@ -61,10 +63,25 @@ public class Player
 			Vector2 mouseMovement = GetMousePosition() - screenCenter;
 			SetMousePosition((int)screenCenter.X, (int)screenCenter.Y);
 			lookDirection = Utils.RotateVector(lookDirection, Vector3.UnitY, -mouseMovement.X / 200 * sensitivity);
-			Vector3 upDownRotationAxis = Utils.RotateVector(Vector3.Normalize(new Vector3(lookDirection.X, 0, lookDirection.Z)), Vector3.UnitY, 90);
+			Vector3 upDownRotationAxis = Utils.RotateVector(Vector3.Normalize(new Vector3(lookDirection.X, 0, lookDirection.Z)), Vector3.UnitY, 90 * MathF.PI / 180);
 			lookDirection = Utils.RotateVector(lookDirection, upDownRotationAxis, mouseMovement.Y / 200 * sensitivity);
 
-			
+			//lookDirection.Y = (float)Math.Clamp(lookDirection.Y, -0.9, 0.9);
+			//lookDirection = Vector3.Normalize(lookDirection);
+
+			Vector3 walkDirection = Vector3.Zero;
+			Vector3 forwardDirection = Vector3.Normalize(new Vector3(lookDirection.X, 0, lookDirection.Z));
+
+			if (IsKeyDown(KeyboardKey.KEY_W))
+				walkDirection += forwardDirection;
+			if (IsKeyDown(KeyboardKey.KEY_S))
+				walkDirection += -forwardDirection;
+			if (IsKeyDown(KeyboardKey.KEY_A))
+				walkDirection += Utils.RotateVector(forwardDirection, Vector3.UnitY, 90 * MathF.PI / 180);
+			if (IsKeyDown(KeyboardKey.KEY_D))
+				walkDirection += Utils.RotateVector(forwardDirection, Vector3.UnitY, -90 * MathF.PI / 180);
+
+				body.AddForce(Utils.ToJVector(walkDirection * 100));
 		}
 
 	}
