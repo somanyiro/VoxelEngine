@@ -63,4 +63,32 @@ public static class Utils
 							 ori.M31, ori.M32, ori.M33, pos.Z,
 							 0, 0, 0, 1.0f);
 	}
+
+	public static Vector3 EulerFromMatrix(JMatrix matrix)
+	{
+		double pitch;
+		double heading;
+		double bank;
+
+		double sin = -matrix.M32/3;
+		pitch = 180 * Math.Asin(sin) / Math.PI;
+
+		if (Math.Abs(sin)>0.9999) { // gimbal lock case
+			bank=0;
+			heading = 180 * Math.Atan2(-matrix.M13, matrix.M11) / Math.PI;
+		} else {
+			heading = 180 * Math.Atan2(matrix.M31, matrix.M33) / Math.PI;
+			bank = 180 * Math.Atan2(matrix.M12, matrix.M22) / Math.PI;
+		}
+		
+		return new Vector3((float)pitch, (float)heading, (float)bank);
+	}
+	
+	public static Vector3 RotateVector(Vector3 vector, Vector3 axis, float angle)
+	{
+		Vector3 vxp = Vector3.Cross(axis, vector);
+		Vector3 vxvxp = Vector3.Cross(axis, vxp);
+		return vector + MathF.Sin(angle) * vxp + (1 - MathF.Cos(angle)) * vxvxp;
+	}
+
 }

@@ -22,15 +22,7 @@ public class VoxelWorld
 	{
 		InitWindow(1280, 720, "VoxelEngine");
 
-		Camera3D camera;
-		camera.position = new Vector3(20.0f, 20.0f, 0.0f);
-		camera.target = new Vector3(0.0f, 5.0f, 0.0f);
-		camera.up = new Vector3(0.0f, 1.0f, 0.0f);
-		camera.fovy = 75.0f;
-		camera.projection = CameraProjection.CAMERA_PERSPECTIVE;
-
-		bool captureCursor = true;
-		HideCursor();
+		Player player = new Player(physicsWorld);
 
 		Random random = new Random();
 
@@ -38,33 +30,8 @@ public class VoxelWorld
 
 		world.CreatePhysicsObjects(physicsWorld);
 
-		for (int i = 0; i < 100; i++) 
-		{
-			RigidBody testCube = physicsWorld.CreateRigidBody();
-			testCube.Position = new JVector(0.1f*i, 10*i, 0.1f*i);
-			testCube.AddShape(new BoxShape(1,1,1));
-		}
-
-		Mesh testCubeMesh = GenMeshCube(1, 1, 1);
-		Material testCubeMaterial = LoadMaterialDefault();
-		SetMaterialTexture(ref testCubeMaterial, MaterialMapIndex.MATERIAL_MAP_DIFFUSE, LoadTexture("assets/stone.png"));
-
 		while (!WindowShouldClose())
 		{
-			if (IsKeyPressed(KeyboardKey.KEY_TAB))
-			{
-				if (!captureCursor)
-				{
-					captureCursor = true;
-					HideCursor();
-				}
-				else
-				{
-					captureCursor = false;
-					ShowCursor();
-				}
-			}
-
 			if (IsKeyPressed(KeyboardKey.KEY_SPACE))
 			{
 				int newSeed = random.Next(10000);
@@ -72,29 +39,18 @@ public class VoxelWorld
 				world.Generate(newSeed);
 			}
 
-			if (captureCursor)
-			{
-				UpdateCamera(ref camera, CameraMode.CAMERA_ORBITAL);
-				SetMousePosition(640, 360);
-			}
+			player.Update(GetFrameTime());
 
 			physicsWorld.Step(GetFrameTime(), true);
 
 			BeginDrawing();
 			ClearBackground(Color.SKYBLUE);
 
-			//DrawFPS(10,10);
+			DrawFPS(10,10);
 
-			BeginMode3D(camera);
+			BeginMode3D(player.camera);
 
 			Rlgl.rlBegin(DrawMode.QUADS);//I moved this here from DrawVoxel because it was slowing down rendering
-
-			foreach (var body in physicsWorld.RigidBodies)
-			{
-				if (body.IsStatic) continue;
-
-				DrawMesh(testCubeMesh, testCubeMaterial, Utils.GetRayLibTransformMatrix(body));
-			}
 
 			//draw non transparent voxels
 			for (int x = 0; x < world.chunks.GetLength(0); x++) {
