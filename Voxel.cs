@@ -53,14 +53,10 @@ public struct Voxel
 	{
 		this.type = type;
 		
-		if (type == Types.Air || type == Types.Water || type == Types.Grass)
-		{
+		if (propertiesOf[type].transparent)
 			transparent = true;
-		}
 		else
-		{
-			transparent = false;	
-		}
+			transparent = false;
 	}
 
 	public bool AnyFaceVisible()

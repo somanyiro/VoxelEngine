@@ -42,12 +42,23 @@ public class VoxelWorld
 				int newSeed = random.Next(10000);
 				Console.WriteLine($"seed: {newSeed}");
 				world.Generate(newSeed);
+				
+				List<RigidBody> toRemove = new List<RigidBody>();
 				foreach (var body in physicsWorld.RigidBodies) 
 				{
 					if (body.IsStatic)
-						physicsWorld.Remove(body);
+					{
+						toRemove.Add(body);
+					}
 				}
+				foreach (var body in toRemove) 
+				{
+					physicsWorld.Remove(body);
+				}
+
 				world.CreatePhysicsObjects(physicsWorld);
+
+				Console.WriteLine($"active physics bodies: {physicsWorld.RigidBodies.Count()}");
 			}
 
 			player.Update(GetFrameTime());
@@ -77,7 +88,12 @@ public class VoxelWorld
 					}
 				}
 			}
-
+			/*
+			foreach (var body in physicsWorld.RigidBodies) 
+			{
+				DrawCubeWires(new Vector3(body.Position.X, body.Position.Y, body.Position.Z), 1, 1, 1, Color.WHITE);
+			}
+			*/
 			Rlgl.rlEnd();
 				
 			EndMode3D();

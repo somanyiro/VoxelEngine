@@ -45,12 +45,13 @@ public class World
 
 	public Voxel GetVoxel(int x, int y, int z)
 	{
+		//returning firt if out of bounds of world to make outward facing planes not visible
 		if (x < 0 || x >= Width)
-			return new Voxel();
+			return new Voxel(Voxel.Types.Dirt);
 		if (y < 0 || y >= Height)
-			return new Voxel();
+			return new Voxel(Voxel.Types.Dirt);
 		if (z < 0 || z >= Depth)
-			return new Voxel();
+			return new Voxel(Voxel.Types.Dirt);
 
 		return chunks[x/8,y/8,z/8].voxels[x%8,y%8,z%8];
 	}
