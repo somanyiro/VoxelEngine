@@ -97,6 +97,7 @@ public class World
 						cube.AddShape(new BoxShape(1));
 						cube.IsStatic = true;
 						cube.Position = new JVector(x - Width/2, y - Height/2, z - Depth/2);
+						cube.Friction = 0;
 					}
 				}
 			}

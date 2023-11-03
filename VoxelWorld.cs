@@ -22,6 +22,11 @@ public class VoxelWorld
 	{
 		InitWindow(1280, 720, "VoxelEngine");
 
+		physicsWorld.UseFullEPASolver = true;
+		physicsWorld.Gravity = JVector.UnitY * -9.8f * 2;
+		//physicsWorld.NumberSubsteps = 10; //not sure if these help or not
+		//physicsWorld.SolverIterations = 10;
+
 		Player player = new Player(physicsWorld);
 
 		Random random = new Random();
@@ -32,11 +37,17 @@ public class VoxelWorld
 
 		while (!WindowShouldClose())
 		{
-			if (IsKeyPressed(KeyboardKey.KEY_SPACE))
+			if (IsKeyPressed(KeyboardKey.KEY_G))
 			{
 				int newSeed = random.Next(10000);
 				Console.WriteLine($"seed: {newSeed}");
 				world.Generate(newSeed);
+				foreach (var body in physicsWorld.RigidBodies) 
+				{
+					if (body.IsStatic)
+						physicsWorld.Remove(body);
+				}
+				world.CreatePhysicsObjects(physicsWorld);
 			}
 
 			player.Update(GetFrameTime());
@@ -45,8 +56,6 @@ public class VoxelWorld
 
 			BeginDrawing();
 			ClearBackground(Color.SKYBLUE);
-
-			DrawFPS(10,10);
 
 			BeginMode3D(player.camera);
 
@@ -73,6 +82,8 @@ public class VoxelWorld
 				
 			EndMode3D();
 
+			DrawFPS(10,10);
+			
 			EndDrawing();
 		}
 

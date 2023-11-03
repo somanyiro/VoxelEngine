@@ -16,6 +16,10 @@ public class Player
 
 	Vector2 screenCenter = new Vector2(640, 360);
 	float sensitivity = 0.7f;
+	float maxHorizontalVelocity = 5;
+	float walkPower = 60f;
+	float jumpPower = 500f;
+	float speedDampening = 0.1f;
 
 	bool captureCursor = false;
 	Vector3 lookDirection = new Vector3(1, 0, 0);
@@ -29,11 +33,10 @@ public class Player
 		camera.projection = CameraProjection.CAMERA_PERSPECTIVE;
 
 		body = physicsWorld.CreateRigidBody();
-		body.AddShape(new CylinderShape(2, 1));
+		body.AddShape(new CylinderShape(2, 0.5f));
 		body.Position = new JVector(20, 20, 0);
 		body.EnableSpeculativeContacts = true;
 		body.Friction = 0;
-		//body.Velocity
 	}
 
 	public void Update(float deltaTime)
@@ -41,6 +44,20 @@ public class Player
 		camera.position = new Vector3(body.Position.X, body.Position.Y+1, body.Position.Z);
 		body.Orientation = JMatrix.Identity;
 		camera.target = camera.position + lookDirection;
+
+		//limit horizontal speed
+		Vector3 horizontalVelocity = new Vector3(body.Velocity.X, 0, body.Velocity.Z);
+		if (horizontalVelocity.Length() > maxHorizontalVelocity)
+		{
+			horizontalVelocity = Vector3.Normalize(horizontalVelocity) * maxHorizontalVelocity;
+			body.Velocity = new JVector(horizontalVelocity.X, body.Velocity.Y, horizontalVelocity.Z);
+		}
+
+		//speed dampening
+		body.Velocity = new JVector(
+			Utils.Lerp(body.Velocity.X, 0, speedDampening * deltaTime * 60),
+			body.Velocity.Y,
+			Utils.Lerp(body.Velocity.Z, 0, speedDampening * deltaTime * 60));
 
 		if (IsKeyPressed(KeyboardKey.KEY_TAB))
 		{
@@ -69,6 +86,7 @@ public class Player
 			//lookDirection.Y = (float)Math.Clamp(lookDirection.Y, -0.9, 0.9);
 			//lookDirection = Vector3.Normalize(lookDirection);
 
+			//WASD movement
 			Vector3 walkDirection = Vector3.Zero;
 			Vector3 forwardDirection = Vector3.Normalize(new Vector3(lookDirection.X, 0, lookDirection.Z));
 
@@ -81,7 +99,10 @@ public class Player
 			if (IsKeyDown(KeyboardKey.KEY_D))
 				walkDirection += Utils.RotateVector(forwardDirection, Vector3.UnitY, -90 * MathF.PI / 180);
 
-				body.AddForce(Utils.ToJVector(walkDirection * 100));
+			body.AddForce(Utils.ToJVector(walkDirection * walkPower));
+
+			if (IsKeyPressed(KeyboardKey.KEY_SPACE))
+				body.AddForce(JVector.UnitY * jumpPower);
 		}
 
 	}
