@@ -4,6 +4,7 @@ using Jitter2;
 using Jitter2.Dynamics;
 using Jitter2.Collision.Shapes;
 using Jitter2.LinearMath;
+using System.Numerics;
 
 namespace VoxelEngine;
 
@@ -11,6 +12,12 @@ public class World
 {
 	public Chunk[,,] chunks;
 	public string[,] biomeIndex;
+
+	public Vector3 CenterOffset
+	{
+		get;
+		private set;
+	}
 
 	public int Width
 	{
@@ -32,10 +39,13 @@ public class World
 		chunks = new Chunk[width, height, depth];
 		biomeIndex = new string[width*8, depth*8];
 
+		CenterOffset = new Vector3(width*8/2, height*8/2, depth*8/2);
+
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				for (int z = 0; z < depth; z++) {
 					chunks[x,y,z] = new Chunk();
+					chunks[x,y,z].position = new Vector3(x*8, y*8, z*8);
 				}
 			}
 		}
@@ -97,7 +107,7 @@ public class World
 						RigidBody cube = physicsWorld.CreateRigidBody();
 						cube.AddShape(new BoxShape(1));
 						cube.IsStatic = true;
-						cube.Position = new JVector(x - Width/2, y - Height/2, z - Depth/2);
+						cube.Position = new JVector(x, y, z);
 						cube.Friction = 0;
 					}
 				}

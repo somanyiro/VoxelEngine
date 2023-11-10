@@ -16,11 +16,31 @@ public class VoxelWorld
 	World world = new World(10, 5, 10);
 	Jitter2.World physicsWorld = new ();
 
+	Chunk[] distanceOrder;
+
 	Texture2D atlas;
 
 	public void Run()
 	{
 		InitWindow(1280, 720, "VoxelEngine");
+
+		distanceOrder = new Chunk[world.chunks.GetLength(0)*world.chunks.GetLength(1)*world.chunks.GetLength(2)];
+
+		{
+
+		int fillCounter = 0;
+
+		for (int x = 0; x < world.chunks.GetLength(0); x++) {
+			for (int y = 0; y < world.chunks.GetLength(1); y++) {
+				for (int z = 0; z < world.chunks.GetLength(2); z++) {
+					distanceOrder[fillCounter] = world.chunks[x,y,z];
+					fillCounter++;
+				}
+			}
+		}
+
+		}
+
 
 		physicsWorld.UseFullEPASolver = true;
 		physicsWorld.Gravity = JVector.UnitY * -9.8f * 2;
@@ -39,7 +59,7 @@ public class VoxelWorld
 		{
 			if (IsKeyPressed(KeyboardKey.KEY_G))
 			{
-				int newSeed = random.Next(10000);
+				int newSeed = random.Next(1000, 10000);
 				Console.WriteLine($"seed: {newSeed}");
 				world.Generate(newSeed);
 				
@@ -61,6 +81,9 @@ public class VoxelWorld
 				Console.WriteLine($"active physics bodies: {physicsWorld.RigidBodies.Count()}");
 			}
 
+			//sort array of chunks by distance to player
+			Utils.BubbleSortIteration<Chunk>(ref distanceOrder, (a,b) => Vector3.Distance(a.position, player.Position) > Vector3.Distance(b.position, player.Position));
+
 			player.Update(GetFrameTime());
 
 			physicsWorld.Step(GetFrameTime(), true);
@@ -76,7 +99,7 @@ public class VoxelWorld
 			for (int x = 0; x < world.chunks.GetLength(0); x++) {
 				for (int y = 0; y < world.chunks.GetLength(1); y++) {
 					for (int z = 0; z < world.chunks.GetLength(2); z++) {
-						DrawChunk(x, y, z, false);
+						DrawChunk(world.chunks[x,y,z], false);
 					}
 				}
 			}
@@ -84,10 +107,16 @@ public class VoxelWorld
 			for (int x = 0; x < world.chunks.GetLength(0); x++) {
 				for (int y = 0; y < world.chunks.GetLength(1); y++) {
 					for (int z = 0; z < world.chunks.GetLength(2); z++) {
-						DrawChunk(x, y, z, true);
+						DrawChunk(world.chunks[x,y,z], true);
 					}
 				}
 			}
+
+			for (int i = 0; i < 27; i++)
+			{
+				DrawCube(distanceOrder[i].position, 3, 3, 3, Color.WHITE);
+			}
+
 			/*
 			foreach (var body in physicsWorld.RigidBodies) 
 			{
@@ -106,22 +135,14 @@ public class VoxelWorld
 		CloseWindow();
 	}
 
-	void DrawChunk(int chunkX, int chunkY, int chunkZ, bool drawOnlyTransparent)
+	void DrawChunk(Chunk chunk, bool drawOnlyTransparent)
 	{
-		if (world.chunks[chunkX, chunkY, chunkZ].empty) return;
-
-		int chunkPositionX = chunkX*8;
-		int chunkPositionY = chunkY*8;
-		int chunkPositionZ = chunkZ*8;
-		
-		int centerOffsetX = world.Width/2;
-		int centerOffsetY = world.Height/2;
-		int centerOffsetZ = world.Depth/2;
+		if (chunk.empty) return;
 
 		for (int x = 0; x < 8; x++) {
 			for (int y = 0; y < 8; y++) {
 				for (int z = 0; z < 8; z++) {
-					Voxel voxel = world.chunks[chunkX,chunkY,chunkZ].voxels[x,y,z];
+					Voxel voxel = chunk.voxels[x,y,z];
 
 					if (voxel.type == Voxel.Types.Air) continue;
 
@@ -138,7 +159,7 @@ public class VoxelWorld
 							DrawVoxel(
 								atlas,
 								new Rectangle(voxelData.atlasX, voxelData.atlasY, voxelData.texWidth, voxelData.texHeight),
-								new Vector3(chunkPositionX+x-centerOffsetX, chunkPositionY+y-centerOffsetY, chunkPositionZ+z-centerOffsetZ),
+								new Vector3(chunk.position.X+x, chunk.position.Y+y, chunk.position.Z+z),
 								new Color(voxel.light, voxel.light, voxel.light, voxelData.alpha),
 								voxel.visibleFaces);
 							break;
@@ -147,7 +168,7 @@ public class VoxelWorld
 							DrawXPlane(
 								atlas,
 								new Rectangle(voxelData.atlasX, voxelData.atlasY, voxelData.texWidth, voxelData.texHeight),
-								new Vector3(chunkPositionX+x-centerOffsetX, chunkPositionY+y-centerOffsetY, chunkPositionZ+z-centerOffsetZ),
+								new Vector3(chunk.position.X+x, chunk.position.Y+y, chunk.position.Z+z),
 								new Color(voxel.light, voxel.light, voxel.light, voxelData.alpha));
 							break;
 					}

@@ -96,4 +96,27 @@ public static class Utils
 		return new JVector(vector.X, vector.Y, vector.Z);
 	}
 
+	public static Vector3 ToVector3(JVector vector)
+	{
+		return new Vector3(vector.X, vector.Y, vector.Z);
+	}
+
+	/// <summary>
+	/// Performs a single iteration of the bubble sort algorithm. Calling this over multiple frames can prevent stutters.
+	/// <param name="array">IList to be sorted</param>
+	/// <param name="comparer">A function delegate that should compare two objects. Use greater then for ascending order.</param>
+	/// </summary>
+	public static void BubbleSortIteration<T>(ref T[] array, Func<T, T, bool> comparer)
+	{
+		for (int i = 0; i < array.Count()-1; i++) 
+		{
+			if (comparer(array[i], array[i+1]))
+			{
+				T holder = array[i+1];
+				array[i+1] = array[i];
+				array[i] = holder;
+			}
+		}
+	}
+
 }

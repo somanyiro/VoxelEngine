@@ -1,10 +1,13 @@
 using Raylib_cs;
 using static Raylib_cs.Raylib;
+using System.Numerics;
 
 namespace VoxelEngine;
 
-public struct Chunk 
+public class Chunk 
 {
+	public Vector3 position = Vector3.Zero;
+
 	public Voxel[,,] voxels = new Voxel[8,8,8];
 	public bool empty = true;
 

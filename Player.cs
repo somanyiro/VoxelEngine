@@ -18,23 +18,29 @@ public class Player
 	float sensitivity = 0.7f;
 	float maxHorizontalVelocity = 5;
 	float walkPower = 60f;
-	float jumpPower = 500f;
+	float jumpPower = 10f;
 	float speedDampening = 0.1f;
 
 	bool captureCursor = false;
 	Vector3 lookDirection = new Vector3(1, 0, 0);
 
+	public Vector3 Position
+	{
+		get => Utils.ToVector3(body.Position);
+		set => body.Position = Utils.ToJVector(value);
+	}
+
 	public Player(Jitter2.World physicsWorld)
 	{
-		camera.position = new Vector3(20.0f, 20.0f, 0.0f);
-		camera.target = new Vector3(0.0f, 0.0f, 0.0f);
+		camera.position = Vector3.Zero;
+		camera.target = Vector3.One;
 		camera.up = new Vector3(0.0f, 1.0f, 0.0f);
 		camera.fovy = 75.0f;
 		camera.projection = CameraProjection.CAMERA_PERSPECTIVE;
 
 		body = physicsWorld.CreateRigidBody();
 		body.AddShape(new CylinderShape(2, 0.5f));
-		body.Position = new JVector(20, 20, 0);
+		body.Position = new JVector(0, 50, 0);
 		body.EnableSpeculativeContacts = true;
 		body.Friction = 0;
 	}
@@ -102,7 +108,8 @@ public class Player
 			body.AddForce(Utils.ToJVector(walkDirection * walkPower));
 
 			if (IsKeyPressed(KeyboardKey.KEY_SPACE))
-				body.AddForce(JVector.UnitY * jumpPower);
+				body.Velocity = new JVector(body.Velocity.X, jumpPower, body.Velocity.Z);
+				//body.AddForce(JVector.UnitY * jumpPower);
 		}
 
 	}
