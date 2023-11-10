@@ -112,9 +112,37 @@ public class VoxelWorld
 				}
 			}
 
-			for (int i = 0; i < 27; i++)
+			if (IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
 			{
-				DrawCube(distanceOrder[i].position, 3, 3, 3, Color.WHITE);
+				Ray mouseRay = GetMouseRay(new Vector2(1280/2, 720/2), player.camera);
+
+				Vector3 closestHit;
+
+				for (int i = 0; i < 27; i++)
+				{
+					for (int x = 0; x < 8; x++) {
+						for (int y = 0; y < 8; y++) {
+							for (int z = 0; z < 8; z++) {
+								
+								BoundingBox voxelBox = new BoundingBox(distanceOrder[i].position - new Vector3(0.5f,0.5f,0.5f), distanceOrder[i].position + Vector3.One);
+
+								RayCollision collision = GetRayCollisionBox(mouseRay, voxelBox);
+
+								if (collision.hit)
+									world.SetVoxel();
+
+							}
+						}
+					}
+
+					
+				}
+			}
+
+			for (int i = 0; i < 100; i++)
+			{
+				//DrawChunk(distanceOrder[i], false);
+				//DrawCube(distanceOrder[i].position, 3, 3, 3, Color.WHITE);
 			}
 
 			/*
